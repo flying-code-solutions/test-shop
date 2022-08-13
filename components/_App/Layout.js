@@ -9,7 +9,8 @@ function Layout({ children }) {
     <>
       <Head>
         <HeadContent />
-        <link href='/style.css' rel='stylesheet' />
+        {/* <link href='/nprogress.css' rel='stylesheet' /> */}
+        {/* <link href='/style.css' rel='stylesheet' /> */}
         <title>Test Shop</title>
       </Head>
       <Header />

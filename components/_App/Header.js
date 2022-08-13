@@ -1,14 +1,43 @@
+import { useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import nprogress from 'nprogress';
 import { Menu, Container, Icon } from 'semantic-ui-react';
 
 function Header() {
+  // hooks need to be executed at the very top
+  const router = useRouter();
+  useEffect(() => {
+    const handleStart = (url) => {
+      console.log(`Loading: ${url}`);
+      nprogress.start();
+    }
+    const handleStop = () => {
+      nprogress.done();
+    }
+
+    router.events.on('routeChangeStart', handleStart);
+    router.events.on('routeChangeComplete', handleStop);
+    router.events.on('routeChangeError', handleStop);
+
+    return () => {
+      router.events.off('routeChangeStart', handleStart);
+      router.events.off('routeChangeComplete', handleStop);
+      router.events.off('routeChangeError', handleStop);
+    }
+  }, [router]);
+
   const user = false;
+
+  function isActive(route) {
+    return router.pathname === route;
+  }
 
   return (
     <Menu fluid id="menu" inverted>
       <Container text>
         <Link href="/">
-          <Menu.Item header>
+          <Menu.Item header active={isActive("/")}>
             <Icon 
               name="shopping bag"
               size="large"
@@ -17,7 +46,7 @@ function Header() {
           </Menu.Item>
         </Link>
         <Link href="/cart">
-          <Menu.Item header>
+          <Menu.Item header active={isActive("/cart")}>
             <Icon 
               name="cart"
               size="large"
@@ -27,7 +56,7 @@ function Header() {
         </Link>
         {user && (
           <Link href="/create">
-            <Menu.Item header>
+            <Menu.Item header active={isActive("/create")}>
               <Icon
                 name="add square"
                 size="large"
@@ -39,7 +68,7 @@ function Header() {
         {user ? (
           <>
             <Link href="/account">
-              <Menu.Item header>
+              <Menu.Item header active={isActive("/account")}>
                 <Icon 
                   name="user"
                   size="large"
@@ -58,7 +87,7 @@ function Header() {
         ) : (
           <>
             <Link href="/login">
-              <Menu.Item header>
+              <Menu.Item header active={isActive("/login")}>
                 <Icon 
                   name="sign in"
                   size="large"
@@ -67,7 +96,7 @@ function Header() {
               </Menu.Item>
             </Link>
             <Link href="/signup">
-              <Menu.Item header>
+              <Menu.Item header active={isActive("/signup")}>
                 <Icon 
                   name="signup"
                   size="large"
