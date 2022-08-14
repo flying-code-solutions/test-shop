@@ -22,13 +22,13 @@ function Home() {
 
 export async function getServerSideProps(context) {
   // fetch data on server
-  //
+  // return response data as an object
   return {
     props: {
       products: products
     }
   };
-
+  // note: this object will be merged with existing props
 }
 
 export default Home;
