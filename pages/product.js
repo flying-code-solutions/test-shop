@@ -17,7 +17,6 @@ function Product({ product }) {
 export async function getServerSideProps({ query: { _id: id } }) {
   connectDb();
   const product = await ProductModel.findById(id);
-  console.log(product);
 
   return {
     props: {
