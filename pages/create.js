@@ -9,6 +9,8 @@ import {
   Header,
   Icon
 } from "semantic-ui-react";
+import axios from "axios";
+import baseUrl from "../utils/baseUrl";
 
 const NEW_PRODUCT = {
   name: "",
@@ -32,19 +34,37 @@ function Create() {
     }
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     // prevent the page from reloading after submit (default behaviour)
     event.preventDefault();
 
+    // upload the product image and get the URL of the clour resource
+    const mediaUrl = await handleImageUpload();
+    console.log(mediaUrl);
+
     // todo implement product submission, just logging it for now
-    console.log(product);
+    const url = `${baseUrl}/api/product`;
+    const payload = { ...product, mediaUrl };
+    await axios.post(url, payload);
     setSuccess(true);
 
     // reset form
     setProduct(NEW_PRODUCT);
+
+    // optional: make the success message disappear after 10 seconds
     // setTimeout(() => {
     //   setSuccess(false);
     // }, 10000);
+  }
+
+  async function handleImageUpload() {
+    const data = new FormData();
+    data.append("file", product.media);
+    data.append("folder", "test-shop");
+    data.append("upload_preset", "test-shop");
+    const response = await axios.post(process.env.CLOUDINARY_URL, data);
+    const mediaUrl = response.data.url;
+    return mediaUrl;
   }
 
   return (
