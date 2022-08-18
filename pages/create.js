@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Form,
   Input,
@@ -11,6 +11,7 @@ import {
 } from "semantic-ui-react";
 import axios from "axios";
 import baseUrl from "../utils/baseUrl";
+import catchErrors from "../utils/catchErrors";
 
 const NEW_PRODUCT = {
   name: "",
@@ -22,8 +23,15 @@ const NEW_PRODUCT = {
 function Create() {
   const [product, setProduct] = useState(NEW_PRODUCT);
   const [mediaPreview, setMediaPreview] = useState("");
+  const [disabled, setDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const isProduct = Object.values(product).every((key) => Boolean(key));
+    setDisabled(!isProduct);
+  }, [product]);
 
   function handleChange(event) {
     const { name, value, files } = event.target;
@@ -36,30 +44,33 @@ function Create() {
   }
 
   async function handleSubmit(event) {
-    // prevent the page from reloading after submit (default behaviour)
-    event.preventDefault();
+    try {
+      // prevent the page from reloading after submit (default behaviour)
+      event.preventDefault();
+      // show loading spinner and disable the Submit btn
+      setLoading(true);
+      // upload the product image and get the URL of the clour resource
+      const mediaUrl = await handleImageUpload();
+      // send a POST request to the DB
+      const url = `${baseUrl}/api/product`;
+      const payload = { ...product, mediaUrl };
+      const response = await axios.post(url, payload);
+      // display a success message
+      setSuccess(true);
+      // reset form
+      setProduct(NEW_PRODUCT);
 
-    setLoading(true);
-
-    // upload the product image and get the URL of the clour resource
-    const mediaUrl = await handleImageUpload();
-    console.log(mediaUrl);
-
-    const url = `${baseUrl}/api/product`;
-    const payload = { ...product, mediaUrl };
-    const response = await axios.post(url, payload);
-    console.log(response);
-    setLoading(false);
-
-    setSuccess(true);
-
-    // reset form
-    setProduct(NEW_PRODUCT);
-
-    // optional: make the success message disappear after 10 seconds
-    // setTimeout(() => {
-    //   setSuccess(false);
-    // }, 10000);
+      // optional: make the success message disappear after 10 seconds
+      // setTimeout(() => {
+      //   setSuccess(false);
+      // }, 10000);
+    } catch (error) {
+      catchErrors(error, setError);
+    } finally {
+      // turn off loading spinner
+      setLoading(false);
+    }
+    
   }
 
   async function handleImageUpload() {
@@ -80,12 +91,17 @@ function Create() {
         <Icon name="add" color="orange" />
         Create New Product
       </Header>
-      <Form loading={loading} success={success} onSubmit={handleSubmit}>
+      <Form loading={loading} success={success} error={Boolean(error)} onSubmit={handleSubmit}>
         <Message
           success
           icon="check"
           header="Success!"
           content="Your product has been successfully created."
+        />
+        <Message
+          error
+          header="Oops!"
+          content={error}
         />
         <Form.Group widths="equal">
           <Form.Field
@@ -128,7 +144,7 @@ function Create() {
         />
         <Form.Field
           control={Button}
-          disabled={loading}
+          disabled={disabled || loading}
           color="blue"
           icon="pencil alternate"
           content="Submit"

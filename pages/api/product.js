@@ -19,23 +19,34 @@ export default async (req, res) => {
 
 async function handlePostRequest(req, res) {
   const { name, price, description, mediaUrl } = req.body;
-  if (!name || !price || !description || !mediaUrl) {
-    return res.status(422).send("Product missing one or more fields!");
+  try {
+    if (!name || !price || !description || !mediaUrl) {
+      return res.status(422).send("Product missing one or more fields!");
+    }
+    const product = await new Product({
+      name,
+      price,
+      description,
+      mediaUrl
+    }).save();
+    res.status(201).json(product);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error while creating product.");
   }
-  const product = await new Product({
-    name,
-    price,
-    description,
-    mediaUrl
-  }).save();
-  res.status(201).json(product);
 }
 
 async function handleDeleteRequest(req, res) {
-  const { _id } = req.query;
-  // deleteOne deletes the document
-  // await Product.deleteOne({ _id: _id });
-  // findOneAndDelete deletes it AND returns it
-  await Product.findOneAndDelete({ _id: _id });
-  res.status(204).json({});
+  try {
+    const { _id } = req.query;
+    // deleteOne deletes the document
+    // await Product.deleteOne({ _id: _id });
+    // findOneAndDelete deletes it AND returns it
+    await Product.findOneAndDelete({ _id: _id });
+    res.status(204).json({});
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error while deleting product.");
+  }
+
 }
