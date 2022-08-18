@@ -16,7 +16,7 @@ const ProductSchema = new Schema({
   sku: {
     type: String,
     unique: true,
-    default: shortid.generate()
+    default: shortid.generate
   },
   description: {
     type: String,

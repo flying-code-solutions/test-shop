@@ -1,8 +1,13 @@
 import connectDb from "../../utils/connectDb";
 import Product from "../../models/Product";
 
+connectDb();
+
 export default async (req, res) => {
   switch (req.method) {
+    case "POST":
+      await handlePostRequest(req, res);
+      break;
     case "DELETE":
       await handleDeleteRequest(req, res);
       break;
@@ -12,8 +17,21 @@ export default async (req, res) => {
   }
 }
 
+async function handlePostRequest(req, res) {
+  const { name, price, description, mediaUrl } = req.body;
+  if (!name || !price || !description || !mediaUrl) {
+    return res.status(422).send("Product missing one or more fields!");
+  }
+  const product = await new Product({
+    name,
+    price,
+    description,
+    mediaUrl
+  }).save();
+  res.status(201).json(product);
+}
+
 async function handleDeleteRequest(req, res) {
-  connectDb();
   const { _id } = req.query;
   // deleteOne deletes the document
   // await Product.deleteOne({ _id: _id });

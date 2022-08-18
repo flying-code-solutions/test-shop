@@ -22,6 +22,7 @@ const NEW_PRODUCT = {
 function Create() {
   const [product, setProduct] = useState(NEW_PRODUCT);
   const [mediaPreview, setMediaPreview] = useState("");
+  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   function handleChange(event) {
@@ -38,14 +39,18 @@ function Create() {
     // prevent the page from reloading after submit (default behaviour)
     event.preventDefault();
 
+    setLoading(true);
+
     // upload the product image and get the URL of the clour resource
     const mediaUrl = await handleImageUpload();
     console.log(mediaUrl);
 
-    // todo implement product submission, just logging it for now
     const url = `${baseUrl}/api/product`;
     const payload = { ...product, mediaUrl };
-    await axios.post(url, payload);
+    const response = await axios.post(url, payload);
+    console.log(response);
+    setLoading(false);
+
     setSuccess(true);
 
     // reset form
@@ -62,7 +67,9 @@ function Create() {
     data.append("file", product.media);
     data.append("folder", "test-shop");
     data.append("upload_preset", "test-shop");
-    const response = await axios.post(process.env.CLOUDINARY_URL, data);
+    console.log(process.env.NEXT_PUBLIC_CLOUDINARY_URL);
+    console.log(data);
+    const response = await axios.post(process.env.NEXT_PUBLIC_CLOUDINARY_URL, data);
     const mediaUrl = response.data.url;
     return mediaUrl;
   }
@@ -73,7 +80,7 @@ function Create() {
         <Icon name="add" color="orange" />
         Create New Product
       </Header>
-      <Form success={success} onSubmit={handleSubmit}>
+      <Form loading={loading} success={success} onSubmit={handleSubmit}>
         <Message
           success
           icon="check"
@@ -121,6 +128,7 @@ function Create() {
         />
         <Form.Field
           control={Button}
+          disabled={loading}
           color="blue"
           icon="pencil alternate"
           content="Submit"
