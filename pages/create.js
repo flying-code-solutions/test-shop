@@ -49,6 +49,8 @@ function Create() {
       event.preventDefault();
       // show loading spinner and disable the Submit btn
       setLoading(true);
+      // reset previous error if there was one
+      setError('');
       // upload the product image and get the URL of the clour resource
       const mediaUrl = await handleImageUpload();
       // send a POST request to the DB
