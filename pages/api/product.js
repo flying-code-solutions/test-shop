@@ -15,7 +15,7 @@ export default async (req, res) => {
       res.status(405).send(`Method ${req.method} not allowed.`);
       break;
   }
-}
+};
 
 async function handlePostRequest(req, res) {
   const { name, price, description, mediaUrl } = req.body;
@@ -48,5 +48,4 @@ async function handleDeleteRequest(req, res) {
     console.error(error);
     res.status(500).send("Server error while deleting product.");
   }
-
 }

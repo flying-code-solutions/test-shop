@@ -49,8 +49,6 @@ function Create() {
       event.preventDefault();
       // show loading spinner and disable the Submit btn
       setLoading(true);
-      // reset previous error if there was one
-      setError('');
       // upload the product image and get the URL of the clour resource
       const mediaUrl = await handleImageUpload();
       // send a POST request to the DB
@@ -72,7 +70,6 @@ function Create() {
       // turn off loading spinner
       setLoading(false);
     }
-    
   }
 
   async function handleImageUpload() {
@@ -82,7 +79,10 @@ function Create() {
     data.append("upload_preset", "test-shop");
     console.log(process.env.NEXT_PUBLIC_CLOUDINARY_URL);
     console.log(data);
-    const response = await axios.post(process.env.NEXT_PUBLIC_CLOUDINARY_URL, data);
+    const response = await axios.post(
+      process.env.NEXT_PUBLIC_CLOUDINARY_URL,
+      data
+    );
     const mediaUrl = response.data.url;
     return mediaUrl;
   }
@@ -93,18 +93,19 @@ function Create() {
         <Icon name="add" color="orange" />
         Create New Product
       </Header>
-      <Form loading={loading} success={success} error={Boolean(error)} onSubmit={handleSubmit}>
+      <Form
+        loading={loading}
+        success={success}
+        error={Boolean(error)}
+        onSubmit={handleSubmit}
+      >
         <Message
           success
           icon="check"
           header="Success!"
           content="Your product has been successfully created."
         />
-        <Message
-          error
-          header="Oops!"
-          content={error}
-        />
+        <Message error header="Oops!" content={error} />
         <Form.Group widths="equal">
           <Form.Field
             control={Input}

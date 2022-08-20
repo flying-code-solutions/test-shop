@@ -1,15 +1,17 @@
 function catchErrors(error, displayError) {
   let errorMsg;
-  // 
+  //
   if (error.response) {
     // The request was made and the server responded
     // with a status code that is not 2XX
-    errorMsg = error.response.data;
-    console.error("Error response", errorMsg);
+    if (error.response.data) {
+      errorMsg = error.response.data;
+      console.error("Error response", errorMsg);
 
-    // For CLoudinary image uploads
-    if (error.response.data.error) {
-      errorMsg = error.response.data.error.message;
+      // For Cloudinary image uploads
+      if (error.response.data.error) {
+        errorMsg = error.response.data.error.message;
+      }
     }
   } else if (error.request) {
     // The request was made, but no response was received
