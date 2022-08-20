@@ -27,7 +27,7 @@ function Header() {
     };
   }, [router]);
 
-  const user = true;
+  const user = false;
 
   function isActive(route) {
     return router.pathname === route;

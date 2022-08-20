@@ -17,7 +17,7 @@ function ProductAttributes({ _id, description }) {
     const url = `${baseUrl}/api/product`;
     const payload = { params: { _id } };
     await axios.delete(url, payload);
-    router.push('/');
+    router.push("/");
   }
 
   return (
@@ -37,7 +37,13 @@ function ProductAttributes({ _id, description }) {
         </Modal.Content>
         <Modal.Actions>
           <Button content="Cancel" onClick={() => setModalOpen(false)} />
-          <Button negative icon="trash" labelPosition="right" content="Delete" onClick={handleDelete} />
+          <Button
+            negative
+            icon="trash"
+            labelPosition="right"
+            content="Delete"
+            onClick={handleDelete}
+          />
         </Modal.Actions>
       </Modal>
     </>
