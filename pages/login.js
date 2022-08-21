@@ -4,6 +4,7 @@ import Link from "next/link";
 import axios from "axios";
 import baseUrl from "../utils/baseUrl";
 import catchErrors from "../utils/catchErrors";
+import { handleLogin } from "../utils/auth";
 
 const NEW_USER = {
   email: "",
@@ -33,8 +34,9 @@ function Login() {
       setLoading(true);
       setError("");
       const url = `${baseUrl}/api/login`;
-      const payload = user;
-      await axios.post(url, payload);
+      const payload = { ...user };
+      const response = await axios.post(url, payload);
+      handleLogin(response.data);
       setUser(NEW_USER);
     } catch (error) {
       catchErrors(error, setError);
