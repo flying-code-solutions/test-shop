@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import shortid from "shortid";
 
 const { Schema } = mongoose;
-const { String, Number } = mongoose.Schema.Types;
+const { String, Number } = Schema.Types;
 
 const ProductSchema = new Schema({
   name: {
