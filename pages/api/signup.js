@@ -9,8 +9,6 @@ import isLength from 'validator/lib/isLength';
 connectDb();
 
 export default async (req, res) => {
-  console.log(req.body);
-
   const { name, email, password } = req.body;
   try {
     // Check if the submitted data is valid
@@ -34,7 +32,6 @@ export default async (req, res) => {
       email,
       password: hash
     }).save();
-    console.log(newUser);
     // Create a cart for the new user
     await new Cart({ user: newUser._id }).save();
     // Create token for the new user

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import nprogress from "nprogress";
 import { Menu, Container, Icon } from "semantic-ui-react";
 
-function Header() {
+function Header({ isAuthenticated }) {
   // hooks need to be executed at the very top
   const router = useRouter();
   useEffect(() => {
@@ -27,8 +27,6 @@ function Header() {
     };
   }, [router]);
 
-  const user = false;
-
   function isActive(route) {
     return router.pathname === route;
   }
@@ -48,7 +46,7 @@ function Header() {
             Cart
           </Menu.Item>
         </Link>
-        {user && (
+        {isAuthenticated && (
           <Link href="/create">
             <Menu.Item header active={isActive("/create")}>
               <Icon name="add square" size="large" />
@@ -56,7 +54,7 @@ function Header() {
             </Menu.Item>
           </Link>
         )}
-        {user ? (
+        {isAuthenticated ? (
           <>
             <Link href="/account">
               <Menu.Item header active={isActive("/account")}>

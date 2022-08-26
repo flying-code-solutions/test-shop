@@ -3,8 +3,11 @@ import { Container } from "semantic-ui-react";
 
 import HeadContent from './HeadContent';
 import Header from './Header';
+import { useAuth } from './AuthProvider';
 
 function Layout({ children }) {
+  const { isAuthenticated } = useAuth();
+
   return (
     <>
       <Head>
@@ -13,7 +16,7 @@ function Layout({ children }) {
         {/* <link href='/style.css' rel='stylesheet' /> */}
         <title>Test Shop</title>
       </Head>
-      <Header />
+      <Header isAuthenticated={isAuthenticated} />
       <Container text style={{ paddingTop: '1em' }}>
         { children }
       </Container>

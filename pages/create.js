@@ -77,8 +77,6 @@ function Create() {
     data.append("file", product.media);
     data.append("folder", "test-shop");
     data.append("upload_preset", "test-shop");
-    console.log(process.env.NEXT_PUBLIC_CLOUDINARY_URL);
-    console.log(data);
     const response = await axios.post(
       process.env.NEXT_PUBLIC_CLOUDINARY_URL,
       data
