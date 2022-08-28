@@ -14,7 +14,16 @@ export const AuthProvider = ({ children }) => {
     async function loadUserFromCookies() {
       // for now, just save token instead of fetching the user from DB
       const token = isAuthenticated();
-      if (token) setUser(token);
+      if (token) {
+        try {
+          const payload = { headers: { Authorization: token } };
+          const url = `${baseUrl}/api/account`;
+          const { data } = await axios.get(url, payload);
+          setUser(data);
+        } catch (error) {
+          console.error("Error fetching current user", error);
+        }
+      }
       // setLoading(false);
     }
     loadUserFromCookies();
@@ -30,7 +39,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     // I can also pass a value of loading to specify conditions for protected routes
-    <AuthContext.Provider value={{ isAuthenticated: !!user, login }}>
+    <AuthContext.Provider value={{ isAuthenticated: !!user, user, login }}>
       {children}
     </AuthContext.Provider>
   );
