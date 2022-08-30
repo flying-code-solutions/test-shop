@@ -1,27 +1,26 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { useRouter } from 'next/router';
 import axios from "axios";
-import { handleLogin, isAuthenticated } from '../../utils/auth';
+import { handleLogin, removeCookie, isAuthenticated } from '../../utils/auth';
 import baseUrl from "../../utils/baseUrl";
 
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadUserFromCookies() {
-      // for now, just save token instead of fetching the user from DB
       const token = isAuthenticated();
       if (token) {
         try {
-          const payload = { headers: { Authorization: token } };
-          const url = `${baseUrl}/api/account`;
-          const { data } = await axios.get(url, payload);
-          setUser(data);
+          getUserFromToken(token);
         } catch (error) {
           console.error("Error fetching current user", error);
+          // throw out invalid token and redirect to the login page
+          removeCookie();          
         }
       }
       // setLoading(false);
@@ -33,13 +32,31 @@ export const AuthProvider = ({ children }) => {
     const url = `${baseUrl}/api/login`;
     const payload = { ...user };
     const { data: token } = await axios.post(url, payload);
+    // setUser(token);
+    await getUserFromToken(token);
     handleLogin(token);
-    setUser(token);
+  }
+
+  const logout = async () => {
+    setUser("");
+    setIsAdmin(false);
+    removeCookie();
+  }
+
+  const getUserFromToken = async (token) => {
+    const payload = { headers: { Authorization: token } };
+    const url = `${baseUrl}/api/account`;
+    const { data } = await axios.get(url, payload);
+    const isRoot = data && data.role === "root";
+    const isAdmin = data && data.role === "admin";
+    console.log(data);
+    setUser(data);
+    setIsAdmin(isRoot || isAdmin);
   }
 
   return (
     // I can also pass a value of loading to specify conditions for protected routes
-    <AuthContext.Provider value={{ isAuthenticated: !!user, user, login }}>
+    <AuthContext.Provider value={{ isAuthenticated: !!user, user, isAdmin, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -54,6 +71,7 @@ export const ProtectRoute = ({ children }) => {
   const protectedRoutes = ["/account", "/cart", "/create"];
 
   useEffect(() => {
+    console.log(isAuthenticated);
     if (!isAuthenticated && protectedRoutes.includes(router.pathname)) {
       router.push("/login");
     }

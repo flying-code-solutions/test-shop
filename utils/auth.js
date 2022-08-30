@@ -10,3 +10,8 @@ export function isAuthenticated() {
   const savedCookie = cookie.get("token");
   return savedCookie;
 }
+
+export function removeCookie() {
+  cookie.remove("token");
+  router.push("/login");
+}

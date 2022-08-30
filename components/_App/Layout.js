@@ -6,7 +6,7 @@ import Header from './Header';
 import { useAuth } from './AuthProvider';
 
 function Layout({ children }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isAdmin, logout } = useAuth();
 
   return (
     <>
@@ -16,7 +16,7 @@ function Layout({ children }) {
         {/* <link href='/style.css' rel='stylesheet' /> */}
         <title>Test Shop</title>
       </Head>
-      <Header isAuthenticated={isAuthenticated} />
+      <Header isAuthenticated={isAuthenticated} isAdmin={isAdmin} logout={logout} />
       <Container text style={{ paddingTop: '1em' }}>
         { children }
       </Container>

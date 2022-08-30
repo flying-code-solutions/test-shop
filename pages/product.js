@@ -2,13 +2,15 @@ import connectDb from "../utils/connectDb";
 import ProductModel from "../models/Product";
 import ProductSummary from "../components/Product/ProductSummary";
 import ProductAttributes from "../components/Product/ProductAttributes";
+import { useAuth } from "../components/_App/AuthProvider";
 
 function Product({ product }) {
+  const { isAdmin } = useAuth();
   // the whole props object can be passed with spread operator like this
   return (
     <>
       <ProductSummary {...product} />
-      <ProductAttributes {...product} />
+      <ProductAttributes {...product} isAdmin={isAdmin} />
     </>
   );
 }

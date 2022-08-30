@@ -12,6 +12,8 @@ import {
 import axios from "axios";
 import baseUrl from "../utils/baseUrl";
 import catchErrors from "../utils/catchErrors";
+import { useRouter } from "next/router";
+import { useAuth } from "../components/_App/AuthProvider";
 
 const NEW_PRODUCT = {
   name: "",
@@ -27,6 +29,14 @@ function Create() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const { isAdmin } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isAdmin) {
+      router.push("/");
+    }
+  }, []);
 
   useEffect(() => {
     const isProduct = Object.values(product).every((key) => Boolean(key));

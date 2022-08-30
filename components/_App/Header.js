@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import nprogress from "nprogress";
 import { Menu, Container, Icon } from "semantic-ui-react";
 
-function Header({ isAuthenticated }) {
+function Header({ isAuthenticated, isAdmin, logout }) {
   // hooks need to be executed at the very top
   const router = useRouter();
   useEffect(() => {
@@ -46,7 +46,7 @@ function Header({ isAuthenticated }) {
             Cart
           </Menu.Item>
         </Link>
-        {isAuthenticated && (
+        {isAdmin && (
           <Link href="/create">
             <Menu.Item header active={isActive("/create")}>
               <Icon name="add square" size="large" />
@@ -62,7 +62,7 @@ function Header({ isAuthenticated }) {
                 Account
               </Menu.Item>
             </Link>
-            <Menu.Item header>
+            <Menu.Item onClick={logout} header>
               <Icon name="sign out" size="large" />
               Logout
             </Menu.Item>
