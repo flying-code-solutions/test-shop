@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "semantic-ui-react";
 import axios from "axios";
 import { catchErrors } from "../../utils/catchErrors";
@@ -12,6 +12,16 @@ function AddProductToCart({ isAuthenticated, productId }) {
   const [success, setSuccess] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    let timeout;
+    if (success) {
+      timeout = setTimeout(() => setSuccess(false), 3000);
+    }
+    return () => {
+      clearTimeout(timeout);
+    }
+  }, [success])
+
   async function handleAddProductToCart() {
     try {
       setLoading(true);
@@ -19,7 +29,7 @@ function AddProductToCart({ isAuthenticated, productId }) {
       const payload = { quantity, productId }
       const token = cookie.get("token");
       const headers = { headers: { Authorization: token } };
-      const response = await axios.put(url, payload, headers);
+      await axios.put(url, payload, headers);
       setSuccess(true);
     } catch (error) {
       catchErrors(error, window.alert);
