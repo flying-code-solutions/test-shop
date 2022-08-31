@@ -9,6 +9,7 @@ const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const router = useRouter();
   // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,7 +26,18 @@ export const AuthProvider = ({ children }) => {
       }
       // setLoading(false);
     }
+    const syncLogout = event => {
+      if (event.key === 'logout') {
+        setUser("");
+        setIsAdmin(false);
+        router.push("/login");
+      }
+    }
+    window.addEventListener('storage', syncLogout);
     loadUserFromCookies();
+    return function cleanup() {
+      window.removeEventListener('storage', syncLogout);
+    }
   }, []);
 
   const login = async (user) => {
@@ -49,7 +61,6 @@ export const AuthProvider = ({ children }) => {
     const { data } = await axios.get(url, payload);
     const isRoot = data && data.role === "root";
     const isAdmin = data && data.role === "admin";
-    console.log(data);
     setUser(data);
     setIsAdmin(isRoot || isAdmin);
   }
@@ -71,7 +82,6 @@ export const ProtectRoute = ({ children }) => {
   const protectedRoutes = ["/account", "/cart", "/create"];
 
   useEffect(() => {
-    console.log(isAuthenticated);
     if (!isAuthenticated && protectedRoutes.includes(router.pathname)) {
       router.push("/login");
     }

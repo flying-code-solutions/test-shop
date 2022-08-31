@@ -13,5 +13,6 @@ export function isAuthenticated() {
 
 export function removeCookie() {
   cookie.remove("token");
+  window.localStorage.setItem("logout", new Date());
   router.push("/login");
 }
