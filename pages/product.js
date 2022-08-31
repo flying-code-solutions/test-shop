@@ -5,11 +5,11 @@ import ProductAttributes from "../components/Product/ProductAttributes";
 import { useAuth } from "../components/_App/AuthProvider";
 
 function Product({ product }) {
-  const { isAdmin } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
   // the whole props object can be passed with spread operator like this
   return (
     <>
-      <ProductSummary {...product} />
+      <ProductSummary isAuthenticated={isAuthenticated} {...product} />
       <ProductAttributes {...product} isAdmin={isAdmin} />
     </>
   );

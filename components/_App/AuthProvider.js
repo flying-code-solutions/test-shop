@@ -79,7 +79,7 @@ export const ProtectRoute = ({ children }) => {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
 
-  const protectedRoutes = ["/account", "/cart", "/create"];
+  const protectedRoutes = ["/account", "/create"];
 
   useEffect(() => {
     if (!isAuthenticated && protectedRoutes.includes(router.pathname)) {
