@@ -17,11 +17,9 @@ function Cart() {
       if (isAuthenticated) {
         const { token } = parseCookies();
         const url = `${baseUrl}/api/cart`;
-        console.log(url);
         const payload = { headers: { Authorization: token } };
         const response = await axios.get(url, payload);
         setProducts(response.data);
-        console.log(response.data);
       }
     }
     getProducts();
@@ -30,8 +28,8 @@ function Cart() {
   return (
     <>
       <Segment>
-        <CartItemList />
-        <CartSummary />
+        <CartItemList products={products} isAuthenticated={isAuthenticated} />
+        <CartSummary products={products} />
       </Segment>
     </>
   );
