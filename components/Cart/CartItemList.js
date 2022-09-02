@@ -1,5 +1,8 @@
 import { Header, Segment, Button, Icon, Item } from "semantic-ui-react";
 import { useRouter } from "next/router"
+import baseUrl from "../../utils/baseUrl";
+import axios from "axios";
+import { parseCookies } from "nookies";
 
 function CartItemList({ products, isAuthenticated }) {
   const router = useRouter();
@@ -22,10 +25,17 @@ function CartItemList({ products, isAuthenticated }) {
           basic
           icon="remove"
           floated="right"
-          onClick={() => console.log(product.product._id)}
+          onClick={() => removeFromCart(product.product._id)}
         />
       )
     }));
+  }
+
+  async function removeFromCart(id) {
+    const { token } = parseCookies();
+    const url = `${baseUrl}/api/cart?productId={id}`;
+    const payload = { headers: { Authorization: token } };
+    await axios.delete(url, payload);
   }
 
   if (products.length === 0) {
