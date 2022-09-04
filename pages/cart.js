@@ -11,6 +11,7 @@ import axios from "axios";
 function Cart() {
   const { isAuthenticated } = useAuth();
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function getProducts() {
@@ -20,16 +21,38 @@ function Cart() {
         const payload = { headers: { Authorization: token } };
         const response = await axios.get(url, payload);
         setProducts(response.data);
+        setLoading(false);
       }
     }
     getProducts();
   }, []);
 
+  async function handleRemoveFromCart(productId) {
+    const { token } = parseCookies();
+    const url = `${baseUrl}/api/cart`;
+    const payload = {
+      params: { productId },
+      headers: {
+        Authorization: token
+      }
+    };
+    const response = await axios.delete(url, payload);
+    setProducts(response.data);
+  }
+
   return (
     <>
       <Segment>
-        <CartItemList products={products} isAuthenticated={isAuthenticated} />
-        <CartSummary products={products} />
+        {!loading && (
+          <>
+            <CartItemList
+              products={products}
+              isAuthenticated={isAuthenticated}
+              handleRemoveFromCart={handleRemoveFromCart}
+            />
+            <CartSummary products={products} />
+          </>
+        )}
       </Segment>
     </>
   );
