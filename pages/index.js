@@ -4,8 +4,9 @@ import connectDb from "../utils/connectDb";
 // import products from "../public/products.json";
 import Product from "../models/Product";
 import ProductList from "../components/Index/ProductList";
+import ProductPagination from "../components/Index/ProductPagination";
 
-function Home({ products }) {
+function Home({ products, totalPages }) {
   // const [products, setProducts] = useState([]);
 
   // useEffect(() => {
@@ -20,7 +21,12 @@ function Home({ products }) {
   //   console.log(response.data);
   // }
 
-  return <ProductList products={products} />;
+  return (
+    <>
+      <ProductList products={products} />
+      <ProductPagination totalPages={totalPages} />
+    </>
+  );
 }
 
 export async function getServerSideProps(context) {
@@ -33,12 +39,28 @@ export async function getServerSideProps(context) {
   // is made straight from here, no need for a redundant API call
   connectDb();
 
-  const products = await Product.find();
+  console.log(context.query);
+  const page = context.query.page ? Number(context.query.page) : 1;
+  const size = 6;
+  let products = [];
+  
+  const totalDocs = await Product.countDocuments();
+  const totalPages = Math.ceil(totalDocs / size);
+
+  if (page === 1) {
+    products = await Product.find().limit(size);
+  } else {
+    const offset = size * (page - 1);
+    products = await Product.find().skip(offset).limit(size);
+  }
+
+  // const products = await Product.find();
   return {
     props: {
       // JSON.parse(JSON.stringify()) is used as a "hack" to prevent
       // serialization error
-      products: JSON.parse(JSON.stringify(products))
+      products: JSON.parse(JSON.stringify(products)),
+      totalPages
     }
   };
 }

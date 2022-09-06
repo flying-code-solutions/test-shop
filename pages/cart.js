@@ -23,8 +23,8 @@ function Cart() {
         const payload = { headers: { Authorization: token } };
         const response = await axios.get(url, payload);
         setProducts(response.data);
-        setLoading(false);
       }
+      setLoading(false);
     }
     getProducts();
   }, []);

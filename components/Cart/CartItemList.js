@@ -4,8 +4,6 @@ import { useRouter } from "next/router"
 function CartItemList({ products, isAuthenticated, handleRemoveFromCart, success }) {
   const router = useRouter();
 
-  console.log(products);
-
   function mapCartProductsToItems(productArr) {
     return productArr.map((product) => ({
       header: (
