@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import AccountHeader from "../components/Account/AccountHeader";
 import AccountOrders from "../components/Account/AccountOrders";
+import AccountPermissions from "../components/Account/AccountPermissions";
 import { useAuth } from "../components/_App/AuthProvider";
 import { parseCookies } from "nookies";
 import axios from "axios";
@@ -27,6 +28,7 @@ function Account() {
   return (<>
     <AccountHeader {...user} />
     <AccountOrders orders={orders} />
+    {user.role === "root" && <AccountPermissions />}
   </>);
 }
 
