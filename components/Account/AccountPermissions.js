@@ -59,17 +59,18 @@ function UserPermission({ user }) {
       isFirstRun.current = false;
       return;
     }
+
+    async function updateRole() {
+      const url = `${baseUrl}/api/account`;
+      const payload = { _id: user._id, role: admin ? "admin" : "user" };
+      await axios.put(url, payload);
+    }
+
     updateRole();
   }, [admin]);
 
   async function handleRoleChange(user) {
     setAdmin(prevState => !prevState);
-  }
-
-  async function updateRole() {
-    const url = `${baseUrl}/api/account`;
-    const payload = { _id: user._id, role: admin ? "admin" : "user" };
-    await axios.put(url, payload);
   }
 
   return (

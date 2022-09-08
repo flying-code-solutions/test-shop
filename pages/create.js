@@ -144,7 +144,7 @@ function Create() {
             onChange={handleChange}
           />
         </Form.Group>
-        <Image src={mediaPreview} rounded centered size="medium" />
+        <Image src={mediaPreview} alt="Image Preview" rounded centered size="medium" />
         <Form.Field
           control={TextArea}
           name="description"
