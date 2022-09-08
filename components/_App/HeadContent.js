@@ -6,3 +6,5 @@ function HeadContent() {
     </>
   );
 }
+
+export default HeadContent;

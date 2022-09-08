@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Input } from "semantic-ui-react";
 import axios from "axios";
-import { catchErrors } from "../../utils/catchErrors";
+import catchErrors from "../../utils/catchErrors";
 import baseUrl from "../../utils/baseUrl";
 import cookie from "js-cookie";
 
