@@ -31,7 +31,7 @@ async function handleGetRequest(req, res) {
       res.status(404).send("User not found.");
     }
   } catch (error) {
-    res.status(403).send("Invalid token!");
+    res.status(401).send("Invalid token!");
   }
 }
 

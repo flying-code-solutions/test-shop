@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Message, Form, Input, Button, Icon, Segment } from "semantic-ui-react";
 import Link from "next/link";
-import catchErrors from "../utils/catchErrors";
+import { Message, Form, Button, Icon, Segment } from "semantic-ui-react";
+
 import { useAuth } from '../components/_App/AuthProvider';
+import catchErrors from "../utils/catchErrors";
 
 const NEW_USER = {
   email: "",
@@ -14,7 +15,7 @@ function Login() {
   const [valid, setValid] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { login } = useAuth();
+  const { authenticate } = useAuth();
 
   useEffect(() => {
     const isUserValid = Object.values(user).every((prop) => Boolean(prop));
@@ -32,7 +33,7 @@ function Login() {
     try {
       setLoading(true);
       setError("");
-      login(user);
+      authenticate(user, "login");
       setUser(NEW_USER);
     } catch (error) {
       catchErrors(error, setError);

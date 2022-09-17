@@ -40,8 +40,8 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = async (user) => {
-    const url = `${baseUrl}/api/login`;
+  const authenticate = async (user, action) => {
+    const url = `${baseUrl}/api/${action}`;
     const payload = { ...user };
     const { data: token } = await axios.post(url, payload);
     // setUser(token);

@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { Message, Form, Input, Button, Icon, Segment } from "semantic-ui-react";
 import Link from "next/link";
-import axios from "axios";
-import baseUrl from "../utils/baseUrl";
+import { Message, Form, Button, Icon, Segment } from "semantic-ui-react";
+
 import catchErrors from "../utils/catchErrors";
-import { handleLogin } from "../utils/auth";
+import { useAuth } from "../components/_App/AuthProvider";
 
 const NEW_USER = {
   name: "",
@@ -17,6 +16,7 @@ function Signup() {
   const [valid, setValid] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { authenticate } = useAuth();
 
   useEffect(() => {
     const isUserValid = Object.values(user).every((prop) => Boolean(prop));
@@ -34,10 +34,7 @@ function Signup() {
     try {
       setLoading(true);
       setError("");
-      const url = `${baseUrl}/api/signup`;
-      const payload = { ...user };
-      const response = await axios.post(url, payload);
-      handleLogin(response.data);
+      authenticate(user, "signup");
       setUser(NEW_USER);
     } catch (error) {
       catchErrors(error, setError);
